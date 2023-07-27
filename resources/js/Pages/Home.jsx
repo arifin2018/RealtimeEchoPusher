@@ -3,9 +3,9 @@ import React from "react";
 
 export default function Home() {
     return (
-        <>
-            <h1>Arifin</h1>
-        </>
+        <div className="p-3">
+            <p>Start chat now...</p>
+        </div>
     );
 }
 
