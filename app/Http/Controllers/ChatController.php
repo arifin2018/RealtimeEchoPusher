@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Chat;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,16 +11,30 @@ use Inertia\Inertia;
 class ChatController extends Controller
 {
     public function index(User $user) {
+        $chat = Chat::where([
+            ['sender_id', Auth::user()->id],
+            ['receiver_id', $user->id],
+        ])->orWhere([
+            ['sender_id', $user->id],
+            ['receiver_id', Auth::user()->id],
+        ])->get();
         return Inertia::render('Chat',[
-            'userLogin'=>$user
+            'userLogin'=>$user,
+            'dataChat' =>$chat
         ]);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request, User $user) {
         $request->validate([
             'message' => 'required'
         ]);
 
-        dd(Auth::user());
+        Chat::create([
+            'sender_id'=>Auth::user()->id,
+            'receiver_id'=>$user->id,
+            'message'=>$request->message,
+        ]);
+
+        return back();
     }
 }

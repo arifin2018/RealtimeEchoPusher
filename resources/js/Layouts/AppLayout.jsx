@@ -33,14 +33,15 @@ export default function AppLayout({ children }) {
                         ))}
                     </div>
                     <div className="justify-between text-right p-6">
-                        <div className="bg-slate-300 rounded-xl p-6 space-y-7">
-                            <span className="block mb-3 text-sky-600 tracking-wide">
+                        <div className="bg-slate-300 rounded-xl p-6 space-y-3">
+                            <span className="block text-sky-600 tracking-wide">
                                 {auth.user.username}
                             </span>
                             <Link
                                 href="/logout"
-                                method="POST"
                                 className="border bg-white font-medium rounded-xl p-2"
+                                method="get"
+                                as="button"
                             >
                                 Logout
                             </Link>
