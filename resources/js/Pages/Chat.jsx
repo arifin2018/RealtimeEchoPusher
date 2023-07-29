@@ -3,14 +3,10 @@ import { useForm } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
 
 export default function Chat(props) {
+    console.log(props.dataChat);
     const { data, setData, post, processing, errors, reset } = useForm({
         message: "",
     });
-    const [chat, setChat] = useState({
-        receiverChat: {},
-        senderChat: {},
-    });
-
     function handleChange(e) {
         const key = e.target.id;
         const value = e.target.value;
@@ -29,8 +25,13 @@ export default function Chat(props) {
         });
     }
 
-    function checkReceive(ChatReceive) {
-        return ChatReceive.receiver_id == props.userLogin.id;
+    function checkUser(senderId, userId, whoesfor = "justify") {
+        if (whoesfor === "justify") {
+            return senderId === userId ? `justify-end` : ``;
+        }
+        if (whoesfor === "background") {
+            return senderId === userId ? `bg-cyan-100` : `bg-slate-100`;
+        }
     }
 
     useEffect(() => {
@@ -41,7 +42,7 @@ export default function Chat(props) {
         //         ["receiverChat"]: Chat.message,
         //     }));
         // });
-        // console.log(chat);
+        console.log(props.userLogin);
     }, []);
 
     return (
@@ -52,9 +53,27 @@ export default function Chat(props) {
                         {props.userLogin.username}
                     </h1>
                 </div>
-                <div className="p-4 flex-1 overflow-y-auto">
+                <div className="p-4 flex-1 overflow-y-auto space-y-2">
                     {props.dataChat.length > 0 ? (
-                        props.dataChat.map((chat) => chat)
+                        props.dataChat.map((chat) => (
+                            <div
+                                className={`flex ${checkUser(
+                                    chat.sender_id,
+                                    props.userLogin.id
+                                )}`}
+                            >
+                                <span
+                                    key={chat.id}
+                                    className={`${checkUser(
+                                        chat.sender_id,
+                                        props.userLogin.id,
+                                        "background"
+                                    )} rounded-lg py-2 px-3`}
+                                >
+                                    {chat.message}
+                                </span>
+                            </div>
+                        ))
                     ) : (
                         <h3>No Chat</h3>
                     )}
