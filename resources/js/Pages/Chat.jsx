@@ -3,10 +3,11 @@ import { useForm } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
 
 export default function Chat(props) {
-    console.log(props.dataChat);
     const { data, setData, post, processing, errors, reset } = useForm({
         message: "",
     });
+
+    const [chats, setChats] = useState([]);
     function handleChange(e) {
         const key = e.target.id;
         const value = e.target.value;
@@ -27,7 +28,7 @@ export default function Chat(props) {
 
     function checkUser(senderId, userId, whoesfor = "justify") {
         if (whoesfor === "justify") {
-            return senderId === userId ? `justify-end` : ``;
+            return senderId === userId ? `` : `justify-end`;
         }
         if (whoesfor === "background") {
             return senderId === userId ? `bg-cyan-100` : `bg-slate-100`;
@@ -35,15 +36,14 @@ export default function Chat(props) {
     }
 
     useEffect(() => {
-        // props.dataChat.filter(checkReceive).forEach((Chat) => {
-        //     console.log(Chat.message);
-        //     setChat((values) => ({
-        //         ...values,
-        //         ["receiverChat"]: Chat.message,
-        //     }));
-        // });
-        console.log(props.userLogin);
+        console.log(chats);
+        setChats(props.dataChat);
+        console.log(chats);
     }, []);
+
+    Echo.channel("chat").listen("MessageChat", function (data) {
+        setChats([...chats, data.message]);
+    });
 
     return (
         <>
@@ -54,10 +54,10 @@ export default function Chat(props) {
                     </h1>
                 </div>
                 <div className="p-4 flex-1 overflow-y-auto space-y-2">
-                    {props.dataChat.length > 0 ? (
-                        props.dataChat.map((chat) => (
+                    {chats.length > 0 ? (
+                        chats.map((chat, index) => (
                             <div
-                                key={chat.id}
+                                key={index}
                                 className={`flex ${checkUser(
                                     chat.sender_id,
                                     props.userLogin.id
