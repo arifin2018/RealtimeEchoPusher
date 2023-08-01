@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageChat;
 use App\Models\Chat;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -29,11 +30,13 @@ class ChatController extends Controller
             'message' => 'required'
         ]);
 
-        Chat::create([
+        $chat = Chat::create([
             'sender_id'=>Auth::user()->id,
             'receiver_id'=>$user->id,
             'message'=>$request->message,
         ]);
+
+        broadcast(new MessageChat($chat))->toOthers();
 
         return back();
     }

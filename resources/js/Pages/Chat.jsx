@@ -57,13 +57,13 @@ export default function Chat(props) {
                     {props.dataChat.length > 0 ? (
                         props.dataChat.map((chat) => (
                             <div
+                                key={chat.id}
                                 className={`flex ${checkUser(
                                     chat.sender_id,
                                     props.userLogin.id
                                 )}`}
                             >
                                 <span
-                                    key={chat.id}
                                     className={`${checkUser(
                                         chat.sender_id,
                                         props.userLogin.id,
