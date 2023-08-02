@@ -51,7 +51,6 @@ export default function Chat(props) {
         function (data) {
             console.log(data);
             setChats([...chats, data.message]);
-            inputChat.current.focus();
         }
     );
 
