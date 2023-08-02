@@ -43,6 +43,7 @@ export default function Chat(props) {
             0,
             chatScreen.current.scrollHeight + 10000000 * 90000000000
         );
+        console.log(props);
     }, [props.dataChat]);
 
     Echo.private("chat-" + props.auth.user.id).listen(
