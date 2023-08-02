@@ -1,11 +1,13 @@
 import AppLayout from "@/Layouts/AppLayout";
 import { useForm } from "@inertiajs/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 export default function Chat(props) {
     const { data, setData, post, processing, errors, reset } = useForm({
         message: "",
     });
+    const chatScreen = useRef();
+    const inputChat = useRef();
 
     const [chats, setChats] = useState([]);
     function handleChange(e) {
@@ -36,14 +38,21 @@ export default function Chat(props) {
     }
 
     useEffect(() => {
-        console.log(chats);
         setChats(props.dataChat);
-        console.log(chats);
-    }, []);
+        chatScreen.current.scrollTo(
+            0,
+            chatScreen.current.scrollHeight + 10000000 * 90000000000
+        );
+    }, [props.dataChat]);
 
-    Echo.channel("chat").listen("MessageChat", function (data) {
-        setChats([...chats, data.message]);
-    });
+    Echo.private("chat-" + props.auth.user.id).listen(
+        "MessageChat",
+        function (data) {
+            console.log(data);
+            setChats([...chats, data.message]);
+            inputChat.current.focus();
+        }
+    );
 
     return (
         <>
@@ -53,7 +62,10 @@ export default function Chat(props) {
                         {props.userLogin.username}
                     </h1>
                 </div>
-                <div className="p-4 flex-1 overflow-y-auto space-y-2">
+                <div
+                    className="p-4 flex-1 overflow-y-auto space-y-2 bottom-0"
+                    ref={chatScreen}
+                >
                     {chats.length > 0 ? (
                         chats.map((chat, index) => (
                             <div
@@ -83,6 +95,7 @@ export default function Chat(props) {
                         <input
                             value={data.message}
                             onChange={handleChange}
+                            ref={inputChat}
                             className="w-full border-x-green-950 form-input border-0 focus:border-t-2 focus:ring-0"
                             placeholder="text message"
                             type="text"

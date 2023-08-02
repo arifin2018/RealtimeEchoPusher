@@ -21,6 +21,7 @@ class MessageChat implements ShouldBroadcast
     public function __construct(object $message)
     {
         $this->message = $message;
+        Log::info(json_encode($this->message));
     }
 
     /**
@@ -30,8 +31,11 @@ class MessageChat implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
+        // return [
+        //     new Channel('chat'),
+        // ];
         return [
-            new Channel('chat'),
+            new PrivateChannel('chat-'.$this->message->receiver_id),
         ];
     }
 }
